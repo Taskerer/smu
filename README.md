@@ -119,6 +119,9 @@ MSG is the ID of service request, 6*ARGS are arguments, REP is respond of servic
 | SetSoftMinLclk | 0x4F |  |
 | Message_Count | 0x50 |  |
 
+## About "Get" Commands
+You can get SMU answer from reading arguments after command. Then decode them or it will be clear result
+
 # A table of REP code
 | Name | ID |
 | :------| :------ |
@@ -129,55 +132,58 @@ MSG is the ID of service request, 6*ARGS are arguments, REP is respond of servic
 | CmdRejectedBusy | 0xFC |
 
 # A table of SMU Feature ID
-| Name             | Bit | Note |
-| :------------------| :-----| :------|
-| CCLK_CONTROLLER  | 0 |      |
-| FAN_CONTROLLER   | 1 |      |
-| DATA_CALCULATION | 2 |      |
-| PPT              | 3 |      |
-| TDC              | 4 |      |
-| THERMAL          | 5 |      |
-| FIT              | 6 |      |
-| EDC              | 7 |      |
-| PLL_POWER_DOWN   | 8 |      |
-| ULV              | 9 |      |
-| VDDOFF           | 10 |      |
-| VCN_DPM          | 11 |      |
-| ACP_DPM          | 12 |      |
-| ISP_DPM          | 13 |      |
-| FCLK_DPM         | 14 |      |
-| SOCCLK_DPM       | 15 |      |
-| MP0CLK_DPM       | 16 |      |
-| LCLK_DPM         | 17 |      |
-| SHUBCLK_DPM      | 18 |      |
-| DCEFCLK_DPM      | 19 |      |
-| GFX_DPM          | 20 |      |
-| DS_GFXCLK        | 21 |      |
-| DS_SOCCLK        | 22 |      |
-| DS_LCLK          | 23 |      |
-| DS_DCEFCLK       | 24 |      |
-| DS_SHUBCLK       | 25 |      |
-| RM               | 26 |      |
-| S0i2             | 27 |      |
-| WHISPER_MODE     | 28 |      |
-| DS_FCLK          | 29 |      |
-| DS_SMNCLK        | 30 |      |
-| DS_MP1CLK        | 31 |      |
-| DS_MP0CLK        | 32 |      |
-| MGCG             | 33 |      |
-| DS_FUSE_SRAM     | 34 |      |
-| GFX_CKS          | 35 |      |
-| PSI0             | 36 |      |
-| PROCHOT          | 37 |      |
-| CPUOFF           | 38 |      |
-| STAPM            | 39 |      |
-| CORE_CSTATES     | 40 |      |
-| GFX_DUTY_CYCLE   | 41 |      |
-| AA_MODE          | 42 |      |
-| LIVMIN           | 43 |      |
-| RLC_PACE         | 44 |      |
+| Name             | Bit = args    | Note                                                                                                 |
+| ---------------- | ------------- | ---------------------------------------------------------------------------------------------------- |
+| CCLK_CONTROLLER  | 0 = 1         | CPU Clock controller - CPU will always work at 1600MHz                                               |
+| FAN_CONTROLLER   | 1 = 2         | Fan will be always 4400 RPM or more                                                                  |
+| DATA_CALCULATION | 2 = 4         | Disable or Enable  CPU power states. No more changing powers (besides STAPM) and voltages are static |
+| PPT              | 3 = 8         | Disable or Enable Slow and Fast Power Limits                                                         |
+| TDC              | 4 = 10        | Disable or Enable TDC Current limits                                                                 |
+| THERMAL          | 5 = 20        | CPU, SoC and iGPU temperature controller disabling                                                   |
+| FIT              | 6 = 40        | Monitors reliability and failure predictions                                                         |
+| EDC              | 7 = 80        | Nothing happens                                                                                      |
+| PLL_POWER_DOWN   | 8 = 100       | Power down state of phase-locked loops to save power                                                 |
+| ULV              | 9 = 200       | ULV voltage for power saving mode enablement                                                         |
+| VDDOFF           | 10 = 400      | Voltage rail off DEBUG PStates voltage control                                                       |
+| VCN_DPM          | 11 = 800      | Locking max VCN clock to 400 MHz while disabled                                                      |
+| ACP_DPM          | 12 = 1000     | Locking NB-Azalia (audio over iGPU) to 400 MHz wh disabl                                             |
+| ISP_DPM          | 13 = 2000     | Locking Image Signal Processor to 100 MHz if disabled                                                |
+| FCLK_DPM         | 14 = 4000     | FCLK clock locking? After disabling                                                                  |
+| SOCCLK_DPM       | 15 = 8000     | Locking max SoC clock to 200 MHz while disabled                                                      |
+| MP0CLK_DPM       | 16 = 10000    | MP0 clocks group clock locking? After disabling                                                      |
+| LCLK_DPM         | 17 = 20000    | Data Latch clock locking? After disabling                                                            |
+| SHUBCLK_DPM      | 18 = 40000    | System hub clock locking? After disabling                                                            |
+| DCEFCLK_DPM      | 19 = 80000    | Nothing happens                                                                                      |
+| GFX_DPM          | 20 = 100000   | Locking max iGPU clock to 400 MHz while disabled                                                     |
+| DS_GFXCLK        | 21 = 200000   | Allow change GFX_CLK from SMU                                                                        |
+| DS_SOCCLK        | 22 = 400000   | Allow change SOC_CLK from SMU                                                                        |
+| DS_LCLK          | 23 = 800000   | Allow change LCLK from SMU                                                                           |
+| DS_DCEFCLK       | 24 = 1000000  | Allow change DCEFCLK from SMU                                                                        |
+| DS_SHUBCLK       | 25 = 2000000  | Allow change SystemHUB_CLK from SMU                                                                  |
+| RM               | 26 = 4000000  | Resource management engine?                                                                          |
+| S0i2             | 27 = 8000000  | Pstate S0i2 for low power idle                                                                       |
+| WHISPER_MODE     | 28 = 10000000 | Whisper event start-stop                                                                             |
+| DS_FCLK          | 29 = 20000000 | Allow change FCLK from SMU                                                                           |
+| DS_SMNCLK        | 30 = 40000000 | Allow change SystemManagementNetworkCLK from SMU                                                     |
+| DS_MP1CLK        | 31 = 80000000 | Allow change MP1 Clocks group from SMU                                                               |
+| DS_MP0CLK        | 32 = 0,1      | Allow change MP0 Clocks group from SMU                                                               |
+| MGCG             | 33 = 0,2      | MemoryGenericClockGating?                                                                            |
+| DS_FUSE_SRAM     | 34 = 0,4      | Deep sleep strate for fuse SRAM from SMU                                                             |
+| GFX_CKS          | 35 = 0,8      | DISABLING WILL DISABLE THE GPU!                                                                      |
+| PSI0             | 36 = 0,10     | PSI0 Currents group                                                                                  |
+| PROCHOT          | 37 = 0,20     | Disabling will disable PROCHOT and CPU CAN WORK ON 400 MHZ!                                          |
+| CPUOFF           | 38 = 0,40     | Disabling will disable C-States                                                                      |
+| STAPM            | 39 = 0,80     | Disabling will disable STAPM                                                                         |
+| CORE_CSTATES     | 40 = 0,100    | Disabling will disable C-States                                                                      |
+| GFX_DUTY_CYCLE   | 41 = 0,200    | Duty Cycle for iGPU control                                                                          |
+| AA_MODE          | 42 = 0,400    | Enabling will give some performance boost                                                            |
+| LIVMIN           | 43 = 0,800    | Minimum live voltage for RV2                                                                         |
+| RLC_PACE         | 44 = 0,1000   | RLC (Run Length Coding) pacing for RV2                                                               |
 
 -These can be enabled with EnableSmuFeatures (0x5) or disabled with DisableSmuFeatures (0x6)   
+
+## Example
+To enable feature set command to 0x5 and in arguments send value from table args (after "="). For examle to enable STAPM feature you need to send MP1 command 0x5 with arguments 0,80 (send 0 to zero argument and 80 to first, "," is a separator beetwen arguments
 
 # PPtable
 PowerPlay Table
@@ -185,6 +191,8 @@ PowerPlay Table
 A table to storage power management information
 
 See AMDGPU Powerplay for more information
+
+Now no way to get RX Vega Mobile Power Play from system
 
 # Firmware
 Grab from BIOS, reverse engineering in progesss.(Help wanted)
