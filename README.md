@@ -134,7 +134,7 @@ You can get SMU answer from reading arguments after command. Then decode them or
 # A table of SMU Feature ID
 | Name             | Bit = args    | Note                                                                                                 |
 | ---------------- | ------------- | ---------------------------------------------------------------------------------------------------- |
-| CCLK_CONTROLLER  | 0 = 1         | CPU Clock controller - CPU will always work at 1600MHz                                               |
+| CCLK_CONTROLLER  | 0 = 1         | CPU Clock controller - CPU will always work at 1800MHz                                               |
 | FAN_CONTROLLER   | 1 = 2         | Fan will be always 4400 RPM or more                                                                  |
 | DATA_CALCULATION | 2 = 4         | Disable or Enable  CPU power states. No more changing powers (besides STAPM) and voltages are static |
 | PPT              | 3 = 8         | Disable or Enable Slow and Fast Power Limits                                                         |
